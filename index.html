@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>windows me reborn project</title>
+    <title>v86 - Windows Me (Japanese) Installer (unpkg)</title>
     
     <style>
         body {
@@ -20,7 +20,6 @@
         }
         #screen_container canvas,
         #screen_container div {
-            /* v86が生成する要素のスタイル */
             width: 100%;
             height: 100%;
             position: absolute;
@@ -33,7 +32,7 @@
 
     <h2>v86 - Windows Me (日本語版) インストーラー</h2>
     <p>
-        <strong>警告:</strong> ブラウザのCORSポリシーにより、このままでは動作しない可能性が高いです。
+        <strong>警告:</strong> CORSポリシーにより、このままでは動作しない可能性が高いです。
     </p>
 
     <div id="screen_container">
@@ -43,45 +42,35 @@
         <button id="start_button">エミュレータを開始</button>
     </p>
 
-    <script src="https://copy.github.io/v86/build/libv86.js"></script>
+    <script src="https://unpkg.com/v86/build/libv86.js"></script>
     <script>
         document.getElementById("start_button").onclick = function() {
             
-            // v86エミュレータの初期化
             var emulator = new V86Starter({
                 
-                // 画面を表示する要素のID
                 screen_container: document.getElementById("screen_container"),
                 
-                // メモリサイズ (128MB)
                 memory_size: 128 * 1024 * 1024,
-                
-                // VRAMサイズ (8MB)
                 vga_memory_size: 8 * 1024 * 1024,
 
-                // BIOSイメージ (ご指定のGitHubリポジトリの「Raw」URL)
                 bios: {
                     "url": "https://raw.githubusercontent.com/copy/v86/master/bios/seabios.bin",
                     "async": true
                 },
 
-                // VGA BIOSイメージ (ご指定のGitHubリポジトリの「Raw」URL)
                 vga_bios: {
                     "url": "https://raw.githubusercontent.com/copy/v86/master/bios/vgabios.bin",
                     "async": true
                 },
 
-                // CD-ROMイメージ (ご指定のarchive.orgのURL)
                 cdrom: {
                     "url": "https://archive.org/download/WindowsMEJapanese_201812/ja_winme_oem.iso",
                     "async": true
                 },
                 
-                // 起動時に自動実行する
                 autostart: true
             });
 
-            // ボタンを非表示にし、テキストを変更
             this.style.display = "none";
             this.previousElementSibling.innerHTML = "起動中... (ファイルの読み込みに時間がかかります)";
         };
