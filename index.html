@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>v86 - Windows Me (Japanese) Installer (unpkg)</title>
+    <title>v86 - Windows Me (Japanese) Installer (jsDelivr)</title>
     
     <style>
         body {
@@ -27,11 +27,14 @@
             top: 0;
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/v86/build/libv86.js"></script>
+    
 </head>
 <body>
 
     <h2>v86 - Windows Me (日本語版) インストーラー</h2>
-    <p>
+    <p id="status_text">
         <strong>警告:</strong> CORSポリシーにより、このままでは動作しない可能性が高いです。
     </p>
 
@@ -42,37 +45,52 @@
         <button id="start_button">エミュレータを開始</button>
     </p>
 
-    <script src="https://unpkg.com/v86/build/libv86.js"></script>
     <script>
-        document.getElementById("start_button").onclick = function() {
+        // ★★★ 変更点 2 ★★★
+        // ページの全リソース読み込み完了後に実行
+        window.onload = function() {
+            var startButton = document.getElementById("start_button");
             
-            var emulator = new V86Starter({
+            startButton.onclick = function() {
                 
-                screen_container: document.getElementById("screen_container"),
-                
-                memory_size: 128 * 1024 * 1024,
-                vga_memory_size: 8 * 1024 * 1024,
+                // V86Starterが定義されているか確認 (安全のため)
+                if (typeof V86Starter === 'undefined') {
+                    document.getElementById("status_text").innerHTML = 
+                        "エラー: v86ライブラリ(libv86.js)の読み込みに失敗しました。";
+                    return;
+                }
 
-                bios: {
-                    "url": "https://raw.githubusercontent.com/copy/v86/master/bios/seabios.bin",
-                    "async": true
-                },
+                // V86Starterが定義されていればエミュレータを初期化
+                var emulator = new V86Starter({
+                    
+                    screen_container: document.getElementById("screen_container"),
+                    
+                    memory_size: 128 * 1024 * 1024,
+                    vga_memory_size: 8 * 1024 * 1024,
 
-                vga_bios: {
-                    "url": "https://raw.githubusercontent.com/copy/v86/master/bios/vgabios.bin",
-                    "async": true
-                },
+                    bios: {
+                        "url": "https://raw.githubusercontent.com/copy/v86/master/bios/seabios.bin",
+                        "async": true
+                    },
 
-                cdrom: {
-                    "url": "https://archive.org/download/WindowsMEJapanese_201812/ja_winme_oem.iso",
-                    "async": true
-                },
-                
-                autostart: true
-            });
+                    vga_bios: {
+                        "url": "https://raw.githubusercontent.com/copy/v86/master/bios/vgabios.bin",
+                        "async": true
+                    },
 
-            this.style.display = "none";
-            this.previousElementSibling.innerHTML = "起動中... (ファイルの読み込みに時間がかかります)";
+                    cdrom: {
+                        "url": "https://archive.org/download/WindowsMEJapanese_201812/ja_winme_oem.iso",
+                        "async": true
+                    },
+                    
+                    autostart: true
+                });
+
+                // ボタンを非表示にし、テキストを変更
+                startButton.style.display = "none";
+                document.getElementById("status_text").innerHTML = 
+                    "起動中... (ファイルの読み込みに時間がかかります)";
+            };
         };
     </script>
 
